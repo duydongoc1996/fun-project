@@ -1,5 +1,6 @@
 import { DB_CONNECTION } from '@app/common/database/database.module-definition';
 import { Inject, Injectable } from '@nestjs/common';
+import { eq } from 'drizzle-orm';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { USER_SCHEMA } from '../../common/schemas/schema';
 
@@ -17,5 +18,15 @@ export class UsersService {
         password: 'okok1234',
       })
       .returning();
+  }
+
+  async findOne(id: number) {
+    const [user] = await this.db
+      .select()
+      .from(USER_SCHEMA.users)
+      .where(eq(USER_SCHEMA.users.id, id))
+      .execute();
+
+    return user;
   }
 }
